@@ -1,0 +1,49 @@
+{
+  "designer": {
+    "name": "Luxury Brand",
+    "walletAddress": "0x33606f5fDA618630f5B297EE84Cce30732dAd48a",
+    "brandName": "LuxuryNFT",
+    "_id": "67b6a0b31f82522882cc5d58",
+    "products": [],
+    "createdAt": "2025-02-20T03:25:39.643Z",
+    "updatedAt": "2025-02-20T03:25:39.643Z",
+    "__v": 0
+  },
+  "product": {
+    "name": "Luxury Collection #1",
+    "tokenId": 9,
+    "tokenUri": "ipfs://QmTFTSrE7BifryrVYhSw2C3sZ9qvWFmBUwtwNTxA2jn2Aq",
+    "discountCode": "LUXURY2024",
+    "price": 0.1,
+    "nftOwner": "0x33606f5fDA618630f5B297EE84Cce30732dAd48a"
+  },
+  "buyer": {
+    "name": "Alice",
+    "walletAddress": "0xd33dE88B94a56544034bc8c829078eba5DbF68f8",
+    "_id": "67b6a0bb1f82522882cc5d60",
+    "createdAt": "2025-02-20T03:25:47.598Z",
+    "updatedAt": "2025-02-20T03:25:47.598Z",
+    "__v": 0
+  },
+  "purchase": {
+    "_id": "67b6a0c21f82522882cc5d67",
+    "tokenId": 9,
+    "tokenUri": "ipfs://QmTFTSrE7BifryrVYhSw2C3sZ9qvWFmBUwtwNTxA2jn2Aq",
+    "buyer": {
+      "_id": "67b6a0bb1f82522882cc5d60",
+      "name": "Alice",
+      "walletAddress": "0xd33dE88B94a56544034bc8c829078eba5DbF68f8"
+    },
+    "designer": {
+      "_id": "67b6a0b31f82522882cc5d58",
+      "name": "Luxury Brand",
+      "brandName": "LuxuryNFT"
+    },
+    "amount": 0.1,
+    "transactionHash": "0x52714a3d476105162c80b71c01b6d2396dff9652d7c74f4c73eadbba5e45b754",
+    "status": "completed",
+    "createdAt": "2025-02-20T03:25:54.475Z",
+    "updatedAt": "2025-02-20T03:25:54.475Z",
+    "__v": 0
+  }
+}
