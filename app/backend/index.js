@@ -10,6 +10,8 @@ const designerRoutes = require("./routes/designerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
 const purchaseRoutes = require("./routes/purchaseRoutes");
 const nftRoutes = require("./routes/nftRoutes");
+const smartWalletRoutes = require('./smartWallet/smartWalletRoutes');
+const marketplaceRoutes = require('./routes/marketplaceRoutes');
 // Connect to MongoDB
 connectDB();
 
@@ -22,6 +24,8 @@ app.use("/api/designer", designerRoutes);
 app.use("/api/buyer", buyerRoutes);
 app.use("/api/purchase", purchaseRoutes);
 app.use("/api/nfts", nftRoutes);
+app.use('/api/wallet', smartWalletRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
 // Error handling middleware
 console.log('Routes registered:', app._router.stack.map(r => r.route?.path).filter(Boolean));
 

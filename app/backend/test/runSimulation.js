@@ -2,54 +2,42 @@ require('dotenv').config();
 const { simulateDesigner } = require('./simulateDesigner');
 const { simulateBuyer } = require('./simulateBuyer');
 const { simulatePurchase } = require('./simulatePurchase');
-const fs = require('fs').promises;
-const path = require('path');
 
-async function runFullSimulation() {
+async function runSimulation() {
     try {
-        console.log('🚀 Starting Full Simulation\n');
-        console.log('=========================\n');
+        console.log('🚀 Starting Full Simulation...\n');
 
-        // Clean up any existing test data
-        try {
-            await fs.unlink(path.join(__dirname, 'testData.json'));
-        } catch (error) {
-            // File might not exist, that's okay
-        }
-
-        // Run designer simulation
+        // 1. Run designer simulation
+        console.log('Step 1: Designer Simulation');
+        console.log('------------------------');
         await simulateDesigner();
-        console.log('\n=========================\n');
-        
-        // Wait a bit before running buyer simulation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Run buyer simulation
+        console.log('\n');
+
+        // 2. Run buyer simulation
+        console.log('Step 2: Buyer Simulation');
+        console.log('---------------------');
         await simulateBuyer();
-        console.log('\n=========================\n');
+        console.log('\n');
 
-        // Wait a bit before running purchase simulation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Run purchase simulation
+        // 3. Run purchase simulation (now includes marketplace)
+        console.log('Step 3: Purchase & Marketplace Simulation');
+        console.log('-------------------------------------');
         await simulatePurchase();
-        console.log('\n=========================\n');
+        console.log('\n');
 
-        // Display final test data
-        const testData = JSON.parse(
-            await fs.readFile(path.join(__dirname, 'testData.json'))
-        );
-        console.log('📝 Final Test Data:', testData);
-
-        console.log('\n=========================\n');
-        console.log('✨ Full simulation completed successfully!');
+        console.log('\n✨ Full simulation completed successfully!');
 
     } catch (error) {
-        console.error('❌ Simulation failed:', error);
+        console.error('❌ Error in simulation:', error.message);
+        if (error.response) {
+            console.error('Response data:', error.response.data);
+        }
         process.exit(1);
     }
 }
 
 if (require.main === module) {
-    runFullSimulation();
+    runSimulation();
 }
+
+module.exports = { runSimulation };

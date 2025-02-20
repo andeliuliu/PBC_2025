@@ -14,8 +14,8 @@ async function simulatePurchase() {
             await fs.readFile(path.join(__dirname, 'testData.json'))
         );
 
-        // 2. Create purchase
-        console.log('1. Creating purchase...');
+        // 2. Create initial purchase from designer
+        console.log('1. Creating purchase from designer...');
         const purchaseData = {
             buyerId: testData.buyer._id,
             designerId: testData.designer._id,
@@ -27,40 +27,63 @@ async function simulatePurchase() {
             `${API_URL}/purchase/buyProduct`,
             purchaseData
         );
-        console.log('✅ Purchase completed:', purchaseResponse.data);
+        console.log('✅ Initial purchase completed:', purchaseResponse.data);
 
-        // 3. Verify NFT ownership
-        console.log('\n2. Verifying NFT ownership...');
-        const productsResponse = await axios.get(
-            `${API_URL}/designer/${testData.designer._id}/products`
-        );
-        
-        const product = productsResponse.data.products.find(
-            p => p.tokenUri === testData.product.tokenUri
-        );
-        
-        if (product.nftOwner === testData.buyer.walletAddress) {
-            console.log('✅ NFT ownership verified - transferred to buyer');
-        } else {
-            throw new Error('NFT ownership verification failed');
-        }
+        // 3. Create marketplace listing
+        console.log('\n2. Creating marketplace listing...');
+        const listingData = {
+            tokenId: purchaseResponse.data.purchase.tokenId,
+            tokenUri: testData.product.tokenUri,
+            price: testData.product.price,
+            designerId: testData.designer._id,
+            sellerId: testData.buyer._id
+        };
 
-        // 4. Check purchase history
-        console.log('\n3. Checking purchase history...');
-        const historyResponse = await axios.get(
-            `${API_URL}/purchase/buyer/${testData.buyer._id}`
+        const listingResponse = await axios.post(
+            `${API_URL}/marketplace/list`,
+            listingData
         );
-        console.log('✅ Purchase history:', historyResponse.data);
+        console.log('✅ Listing created:', listingResponse.data);
+
+        // 4. Create second buyer
+        console.log('\n3. Creating second buyer...');
+        const buyer2Data = {
+            name: 'Second Buyer',
+            walletAddress: '0xc96a4D66Dc669799c042b5D6CC94e907CEea1aF1'
+        };
+
+        const buyer2Response = await axios.post(
+            `${API_URL}/buyer`,
+            buyer2Data
+        );
+        console.log('✅ Second buyer created:', buyer2Response.data);
+
+        // 5. Purchase from marketplace
+        console.log('\n4. Purchasing from marketplace...');
+        const marketplacePurchaseData = {
+            buyerId: buyer2Response.data.buyer._id
+        };
+
+        const marketplacePurchaseResponse = await axios.post(
+            `${API_URL}/marketplace/buy/${listingResponse.data.listing._id}`,
+            marketplacePurchaseData
+        );
+        console.log('✅ Marketplace purchase completed:', marketplacePurchaseResponse.data);
 
         // Store final test data
         testData.purchase = purchaseResponse.data.purchase;
+        testData.marketplace = {
+            listing: listingResponse.data.listing,
+            secondaryBuyer: buyer2Response.data.buyer,
+            secondaryPurchase: marketplacePurchaseResponse.data
+        };
+
         await fs.writeFile(
             path.join(__dirname, 'testData.json'),
             JSON.stringify(testData, null, 2)
         );
 
         console.log('\n✨ Purchase simulation completed successfully!');
-
     } catch (error) {
         console.error('❌ Error in purchase simulation:', error.message);
         if (error.response) {

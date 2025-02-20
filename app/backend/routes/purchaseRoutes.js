@@ -3,7 +3,7 @@ const router = express.Router();
 const Purchase = require('../db/models/Purchase');
 const Designer = require('../db/models/Designer');
 const Buyer = require('../db/models/Buyer');
-const { transferNft } = require("../contractService");
+const { mintNftToBuyer } = require('../contractService');
 
 /**
  * Get all purchases for a buyer
@@ -44,72 +44,52 @@ router.get("/designer/:designerId", async (req, res) => {
  */
 router.post("/buyProduct", async (req, res) => {
     try {
-        const { buyerId, designerId, tokenUri } = req.body;
+        const { buyerId, designerId, tokenUri, amount } = req.body;
 
-        // Find buyer
+        // Get buyer and designer details
         const buyer = await Buyer.findById(buyerId);
-        if (!buyer) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Buyer not found" 
-            });
-        }
-
-        // Find designer and product
         const designer = await Designer.findById(designerId);
-        if (!designer) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Designer not found" 
+
+        if (!buyer || !designer) {
+            return res.status(404).json({
+                success: false,
+                message: 'Buyer or Designer not found'
             });
         }
 
-        const product = designer.products.find(p => p.tokenUri === tokenUri);
-        if (!product) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Product not found" 
-            });
-        }
-
-        // Transfer NFT
-        const receipt = await transferNft(
-            designer.walletAddress,
+        // Mint NFT to buyer
+        const { receipt, tokenId } = await mintNftToBuyer(
             buyer.walletAddress,
-            product.tokenId  // Use tokenId for the transfer
+            tokenUri,
+            designer.brandName,
+            'DISCOUNT_CODE'
         );
 
-        // Update product owner
-        product.nftOwner = buyer.walletAddress;
-        await designer.save();
-
-        // Create purchase record - Now including all required fields
+        // Create purchase record
         const purchase = new Purchase({
-            tokenId: product.tokenId,    // Add this
-            tokenUri: product.tokenUri,
+            tokenId: tokenId,
+            tokenUri: tokenUri,
             buyer: buyerId,
+            seller: designerId,
             designer: designerId,
-            amount: product.price,
-            transactionHash: receipt.hash,  // Changed from receipt.transactionHash
-            status: 'completed'
+            amount: amount,
+            transactionHash: receipt.hash,
+            type: 'initial'
         });
 
-        const savedPurchase = await purchase.save();
-        const populatedPurchase = await Purchase.findById(savedPurchase._id)
-            .populate('buyer', 'name walletAddress')
-            .populate('designer', 'name brandName');
+        await purchase.save();
 
-        res.json({ 
-            success: true, 
-            purchase: populatedPurchase,
+        res.status(201).json({
+            success: true,
+            purchase: purchase,
             transaction: receipt
         });
 
     } catch (error) {
-        console.error("Error processing purchase:", error);
-        res.status(500).json({ 
-            success: false, 
-            message: "Purchase failed" 
+        console.error('Error processing purchase:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message
         });
     }
 });

@@ -5,6 +5,7 @@ require('dotenv').config();
 // Setup provider and contract
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const brandSigner = new ethers.Wallet(process.env.PRIVATE_KEY_BRAND, provider);
+const buyerSigner = new ethers.Wallet(process.env.PRIVATE_KEY_BUYER, provider);
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const contract = new ethers.Contract(contractAddress, BrandMembershipABI, brandSigner);
 
@@ -15,6 +16,7 @@ async function mintNftToBuyer(buyerAddress, tokenUri, brandName, discountCode) {
     try {
         console.log(`Minting NFT to ${buyerAddress} with URI ${tokenUri}`);
         
+        // Always use brandSigner for minting since only designer can mint
         const tx = await contract.mintNFT(
             buyerAddress,
             tokenUri,
@@ -43,12 +45,35 @@ async function transferNft(from, to, tokenId) {
     try {
         console.log(`Transferring NFT ${tokenId} from ${from} to ${to}`);
         
-        const tx = await contract.transferFrom(from, to, tokenId);
+        // Check current owner
+        const currentOwner = await contract.ownerOf(tokenId);
+        console.log('Current owner:', currentOwner);
+        
+        if (currentOwner.toLowerCase() !== from.toLowerCase()) {
+            throw new Error(`Sender ${from} does not own token ${tokenId}`);
+        }
+
+        // Use different signer based on who's transferring
+        let signerToUse;
+        if (from.toLowerCase() === brandSigner.address.toLowerCase()) {
+            console.log('Using brand signer for transfer');
+            signerToUse = brandSigner;
+        } else {
+            console.log('Using buyer signer for transfer');
+            signerToUse = buyerSigner;
+        }
+
+        // Connect contract with correct signer
+        const contractWithSigner = contract.connect(signerToUse);
+        
+        console.log('Executing transfer...');
+        const tx = await contractWithSigner.transferFrom(from, to, tokenId);
         const receipt = await tx.wait();
+        console.log('Transfer confirmed:', receipt.hash);
         
         return receipt;
     } catch (error) {
-        console.error('Error transferring NFT:', error);
+        console.error('Error in transferNft:', error);
         throw error;
     }
 }
@@ -189,6 +214,28 @@ async function getTokensOfOwner(ownerAddress) {
     }
 }
 
+async function approveMarketplace(tokenId) {
+    try {
+        console.log(`Approving marketplace for token ${tokenId}`);
+        const tx = await contract.approve(process.env.CONTRACT_ADDRESS, tokenId);
+        const receipt = await tx.wait();
+        return receipt;
+    } catch (error) {
+        console.error('Error approving marketplace:', error);
+        throw error;
+    }
+}
+
+async function isApprovedForMarketplace(tokenId) {
+    try {
+        const approved = await contract.getApproved(tokenId);
+        return approved === process.env.CONTRACT_ADDRESS;
+    } catch (error) {
+        console.error('Error checking approval:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     mintNftToBuyer,
     transferNft,
@@ -200,5 +247,7 @@ module.exports = {
     totalSupply,
     tokenByIndex,
     tokenOfOwnerByIndex,
-    getTokensOfOwner
+    getTokensOfOwner,
+    approveMarketplace,
+    isApprovedForMarketplace
 };

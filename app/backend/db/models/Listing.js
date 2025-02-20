@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const purchaseSchema = new mongoose.Schema({
+const listingSchema = new mongoose.Schema({
     tokenId: {
         type: Number,
         required: true
@@ -9,14 +9,9 @@ const purchaseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    buyer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Buyer',
-        required: true
-    },
     seller: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Designer',
+        ref: 'Buyer',
         required: true
     },
     designer: {
@@ -24,20 +19,15 @@ const purchaseSchema = new mongoose.Schema({
         ref: 'Designer',
         required: true
     },
-    amount: {
+    price: {
         type: Number,
         required: true
     },
-    transactionHash: {
+    status: {
         type: String,
-        required: true,
-        unique: true 
-    },
-    type: {
-        type: String,
-        enum: ['initial', 'marketplace'],
-        required: true
+        enum: ['active', 'sold', 'cancelled'],
+        default: 'active'
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Purchase', purchaseSchema);
+module.exports = mongoose.model('Listing', listingSchema);
