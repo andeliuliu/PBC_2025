@@ -1,59 +1,52 @@
-Presentation:
-https://docs.google.com/presentation/d/1A23dNowjPOHSoKg1mjL5vMOYxwnjY-R9ditiDAGGJlk/edit#slide=id.g2d981ffed49_1_165
+# 🌸 Orchid – NFT-Powered Loyalty Program  
 
-Video Link:
-https://vimeo.com/1059006093/56350fc08d?ts=0&share=copy
+Orchid transforms the way brands and consumers interact by turning every **purchase into an NFT**, unlocking **exclusive perks, discounts, and engagement opportunities.** Built with **Base, OnchainKit, and Smart Wallets**, Orchid ensures a seamless, gasless, and user-friendly experience for both brands and customers.
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/coinbase/onchainkit/main/site/docs/public/logo/v0-27.png">
-    <img alt="OnchainKit logo vibes" src="https://raw.githubusercontent.com/coinbase/onchainkit/main/site/docs/public/logo/v0-27.png" width="auto">
-  </picture>
-</p>
+---
 
-# Onchain App Template
+## 🔗 Links  
+📽 **[Video Demo](https://vimeo.com/1059006093/56350fc08d?ts=0&share=copy)**  
+📊 **[Presentation Slides](https://docs.google.com/presentation/d/1A23dNowjPOHSoKg1mjL5vMOYxwnjY-R9ditiDAGGJlk/edit#slide=id.g2d981ffed49_1_165)**  
 
-An Onchain App Template build with [OnchainKit](https://onchainkit.xyz), and ready to be deployed to Vercel.
+---
 
-Play with it live on https://onchain-app-template.vercel.app
+## 🚀 About Orchid  
 
-Have fun! ⛵️
+Traditional loyalty programs are outdated—customers forget their points, rewards expire, and engagement feels one-sided. Orchid changes the game by:  
 
-<br />
+✅ **Turning every product purchase into an NFT collectible**  
+✅ **Providing dynamic perks & discounts based on NFT collections**  
+✅ **Allowing users to trade or sell their NFTs on secondary markets**  
+✅ **Creating direct brand-to-customer engagement via blockchain**  
 
-## Setup
+With **Base, OnchainKit, and Smart Wallets**, Orchid ensures a **frictionless** experience, making blockchain **invisible** while providing real-world benefits.
 
-To ensure all components work seamlessly, set the following environment variables in your `.env` file using `.env.local.example` as a reference.
+---
 
-You can find the API key on the [Coinbase Developer Portal's OnchainKit page](https://portal.cdp.coinbase.com/products/onchainkit). If you don't have an account, you will need to create one. 
+## 💡 Tech Stack  
 
-You can find your Wallet Connector project ID at [Wallet Connect](https://cloud.walletconnect.com).
+- **Blockchain**: [Base L2](https://base.org/) (Ethereum Layer 2)  
+- **Smart Contracts**: Solidity, OpenZeppelin  
+- **Front End**: Next.js, OnchainKit, Tailwind CSS  
+- **Authentication**: OnchainKit 
+- **Wallet Management**: Smart Wallets  
+- **Storage**: Pinata (IPFS for NFT metadata)  
 
-```sh
-# See https://portal.cdp.coinbase.com/products/onchainkit
-NEXT_PUBLIC_CDP_API_KEY="GET_FROM_COINBASE_DEVELOPER_PLATFORM"
+---
 
-# See https://cloud.walletconnect.com
-NEXT_PUBLIC_WC_PROJECT_ID="GET_FROM_WALLET_CONNECT"
-```
-<br />
+## 📦 Setup & Installation  
 
-## Locally run
-
-```sh
-# Install bun in case you don't have it
+# Install Bun (if not installed)
 curl -fsSL https://bun.sh/install | bash
 
-# Install packages
+# Install dependencies
 bun i
 
-# Run Next app
+# Start the development server
 bun run dev
-```
-<br />
 
-make .env file paste the following into the .env file:
 
+# Create an .env file
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=
 
 NEXT_PUBLIC_CDP_API_KEY="organizations/a99d03a4-c6df-4df9-aa2d-fb549cdeac3f/apiKeys/497519ea-84a3-44af-8428-05f6bc9e8a56"
@@ -63,5 +56,3 @@ NEXT_PUBLIC_ENVIRONMENT=localhost
 NEXT_PUBLIC_WC_PROJECT_ID="7876166dcd3e5ce4e2c532bb947e37a3"
 
 NEXT_PUBLIC_PINATA_JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyNGQ2MjE3YS1jNmJlLTRlYWUtYmRhOS04OGMwMTUxNThkMTEiLCJlbWFpbCI6ImFuZGVsZXJsaXV0dkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMGY3MTJmMzgyOTNmOTg5ZDg1NzAiLCJzY29wZWRLZXlTZWNyZXQiOiIyNDZlYTNmNWNiYTMyMTliNjU4ZjJmZWUyZGZiOTVlZTQzOThkNjkxYWM3MjYwY2E2YTUxZjQ3OWU2ZGM4NWQwIiwiZXhwIjoxNzcxNjgwMjY5fQ.i4haJylLNRy9vnOC3pSqAt7tPf_qUiS11rvrlLgWZaU
-
-## Resources
