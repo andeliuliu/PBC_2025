@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inria_Serif } from "next/font/google";
+import { Inria_Serif, Inter } from "next/font/google";
 import { NEXT_PUBLIC_URL } from "../config";
 
 import "./global.css";
@@ -10,6 +10,11 @@ import dynamic from "next/dynamic";
 const inriaSerif = Inria_Serif({
   subsets: ["latin"],
   weight: ["300", "400", "700"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const OnchainProviders = dynamic(
@@ -40,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inriaSerif.className}>
+    <html lang="en" className={`${inriaSerif.className} ${inter.className}`}>
       <body className="flex items-center justify-center">
         <OnchainProviders>{children}</OnchainProviders>
       </body>

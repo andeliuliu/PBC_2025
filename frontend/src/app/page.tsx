@@ -150,7 +150,7 @@ export default function Page() {
                 )}
               </div>
               <div className="p-2">
-                <p className="text-sm text-gray-600">{product.seller}</p>
+                <p className="text-sm text-gray-600 font-serif">{product.seller}</p>
                 <p className="font-semibold">${product.price}</p>
               </div>
             </div>
