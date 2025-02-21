@@ -1,5 +1,5 @@
 export const BASE_SEPOLIA_CHAIN_ID = 84532;
-export const mintContractAddress = "0xd685877182e0e77096ed9064a1a221359e2ffb01"; // Replace with your deployed address
+export const mintContractAddress = "0xdc59b56a634cde9d56a418a29d70ea257886937b"; // Replace with your deployed address
 export const mintABI = [
   {
     inputs: [

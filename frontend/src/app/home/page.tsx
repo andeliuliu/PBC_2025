@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import WalletWrapper from "src/components/WalletWrapper";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount } from "wagmi";
 import {
   Transaction,
   TransactionButton,
@@ -14,6 +14,8 @@ import {
   mintContractAddress,
 } from "src/constants";
 import type { ContractFunctionParameters } from "viem";
+import { createPublicClient, http } from "viem";
+import { baseSepolia } from "viem/chains";
 
 interface Product {
   id: number;
@@ -49,6 +51,43 @@ const products: Product[] = [
   },
 ];
 
+// Create a public client
+const publicClient = createPublicClient({
+  chain: baseSepolia,
+  transport: http(),
+});
+
+// Function to read topNft
+const getTopNftId = async () => {
+  try {
+    // First verify the contract exists
+    const code = await publicClient.getBytecode({
+      address: mintContractAddress,
+    });
+
+    if (!code) {
+      console.error("Contract not found at address:", mintContractAddress);
+      return null;
+    }
+
+    const topNftId = await publicClient.readContract({
+      address: mintContractAddress,
+      abi: mintABI,
+      functionName: "topNft",
+    });
+
+    console.log("Latest minted NFT ID:", topNftId);
+    return topNftId;
+  } catch (error) {
+    console.error("Error reading topNft:", error);
+    // Log more details about the contract
+    console.log("Contract address:", mintContractAddress);
+    console.log("Network:", baseSepolia.id);
+    return null;
+  }
+};
+
+console.log(getTopNftId());
 export default function Home() {
   const { address } = useAccount();
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,12 +96,6 @@ export default function Home() {
   const [lastMintedTokenId, setLastMintedTokenId] = useState<string | null>(
     null
   );
-
-  const { data: topNftId } = useContractRead({
-    address: mintContractAddress,
-    abi: mintABI,
-    functionName: "topNft",
-  });
 
   const getSelectedProducts = () => {
     return products.filter((product) => selectedItems.includes(product.id));
@@ -113,7 +146,8 @@ export default function Home() {
         <Transaction
           contracts={contracts}
           chainId={BASE_SEPOLIA_CHAIN_ID}
-          onSuccess={() => {
+          onSuccess={async () => {
+            const topNftId = await getTopNftId();
             setLastMintedTokenId(topNftId?.toString());
           }}
           onError={(error) => {
