@@ -49,7 +49,7 @@ export default function RootLayout({
       <body className="flex items-center justify-center text-[#030712]">
         <OnchainProviders>
           <div className="min-h-screen w-full p-4 bg-[#F2EDE9]">
-            <div className="mx-auto w-[480px] h-[calc(100vh-32px)] relative bg-[#F2EDE9] shadow-xl rounded-3xl px-4">
+            <div className="mx-auto w-[480px] h-[calc(100vh-32px)] relative bg-[#F2EDE9] shadow-xl rounded-3xl px-4 overflow-hidden">
               <Header />
               <div className="bg-[#F2EDE9] overflow-y-auto h-[calc(100vh-180px)] pb-20">
                 {children}

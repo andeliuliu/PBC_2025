@@ -10,7 +10,7 @@ export default function Header() {
           <h1 className="mt-2 text-xl font-serif">Orchid</h1>
         </div>
         <WalletWrapper
-          className="min-w-[120px] bg-[#A04545] text-white rounded-lg"
+          className="min-w-[120px] bg-[#A04545] text-white rounded-t-lg rounded-b-lg"
           text="Connect"
         />
       </div>
