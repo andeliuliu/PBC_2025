@@ -1,17 +1,63 @@
 export const BASE_SEPOLIA_CHAIN_ID = 84532;
-export const mintContractAddress = '0xA3e40bBe8E8579Cd2619Ef9C6fEA362b760dac9f';
+export const mintContractAddress = "0xdc59b56a634cde9d56a418a29d70ea257886937b"; // Replace with your deployed address
 export const mintABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "brandName",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "discountCode",
+        type: "string",
       },
     ],
-    name: 'mint',
+    name: "mintNFT",
     outputs: [],
-    stateMutability: 'public',
-    type: 'function',
+    stateMutability: "public",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "topNft",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
+    name: "ownerOf",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
+    name: "nftDetails",
+    outputs: [
+      { internalType: "address", name: "brandCreator", type: "address" },
+      { internalType: "string", name: "brandName", type: "string" },
+      { internalType: "string", name: "discountCode", type: "string" },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
 ] as const;
