@@ -20,8 +20,8 @@ export async function getBrandDiscounts(userAddress: string) {
 
     if (!topNftId) return brandDiscounts;
 
-    // Check each NFT
-    for (let i = 1; i <= Number(topNftId); i++) {
+    // Check each NFT starting from 0
+    for (let i = 0; i <= Number(topNftId); i++) {
       try {
         const owner = await publicClient.readContract({
           address: mintContractAddress,

@@ -8,11 +8,11 @@ const publicClient = createPublicClient({
 });
 
 const PROFILE_IMAGES = [
-  '/annHathaway.png',
-  '/chrisrock.png',
-  '/kendalljenner.png',
-  '/leonardodecaporio.png',
-  '/nataliePortman.png',
+  "/annHathaway.png",
+  "/chrisrock.png",
+  "/kendalljenner.png",
+  "/leonardodecaporio.png",
+  "/nataliePortman.png",
 ];
 
 export interface LeaderboardEntry {
@@ -49,10 +49,10 @@ export const getBrandLeaderboard = async (
     // Create a map to store address => nft count
     const addressCounts = new Map<string, number>();
 
-    // Fetch all NFTs from 1 to topNftId
-    console.log(`[getBrandLeaderboard] Fetching NFTs from 1 to ${topNftId}`);
+    // Fetch all NFTs from 0 to topNftId
+    console.log(`[getBrandLeaderboard] Fetching NFTs from 0 to ${topNftId}`);
 
-    for (let i = 1; i <= Number(topNftId); i++) {
+    for (let i = 0; i <= Number(topNftId); i++) {
       try {
         console.log(`[getBrandLeaderboard] Processing NFT #${i}`);
 
@@ -114,7 +114,8 @@ export const getBrandLeaderboard = async (
 
     // Convert to array and sort
     const leaderboard: LeaderboardEntry[] = Array.from(addressCounts.entries())
-      .map(([address, count], index) => ({  // Added index parameter here
+      .map(([address, count], index) => ({
+        // Added index parameter here
         address,
         name: `${address.slice(0, 6)}...${address.slice(-4)}`,
         nftCount: count,
