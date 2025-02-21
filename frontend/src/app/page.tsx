@@ -46,6 +46,10 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState("home");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
+  const getSelectedProducts = () => {
+    return products.filter(product => selectedItems.includes(product.id));
+  };
+
   const toggleItemSelection = (productId: number) => {
     setSelectedItems(prev => 
       prev.includes(productId) 
@@ -151,6 +155,53 @@ export default function Page() {
           </div>
         ))}
       </main>
+
+      {/* Cart Popup */}
+      {selectedItems.length > 0 && (
+        <>
+          <div className="fixed bottom-20 left-4 right-4 mb-2">
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {getSelectedProducts().map((product) => (
+                <div key={product.id} className="relative flex-shrink-0 w-[60px] h-[60px]">
+                  <Image
+                    src={product.image}
+                    alt={`Selected ${product.seller}`}
+                    fill
+                    className="rounded-lg object-cover"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleItemSelection(product.id);
+                    }}
+                    className="absolute -top-1 -right-1 bg-[#A04545] rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg mt-2"
+              onClick={() => console.log('Purchase clicked')}
+            >
+              Purchase ({selectedItems.length} items)
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 p-4 bg-[#F2EDE9]">
