@@ -148,12 +148,15 @@ contract BrandMembership is ERC721URIStorage {
         
         for(uint256 i = 0; i < size; i++) {
             uint256 tokenId = startId + i;
-            if(_exists(tokenId)) {
+            try this.ownerOf(tokenId) returns (address owner) {
                 NFTData memory data = nftDetails[tokenId];
                 creators[i] = data.brandCreator;
                 brands[i] = data.brandName;
                 discounts[i] = data.discountCode;
-                owners[i] = ownerOf(tokenId);
+                owners[i] = owner;
+            } catch {
+                // Token doesn't exist, leave default values
+                continue;
             }
         }
         
