@@ -32,12 +32,12 @@ export async function getBrandDiscounts(userAddress: string) {
 
         // If user owns this NFT, check its brand
         if (owner === userAddress) {
-          const nftDetails = await publicClient.readContract({
+          const nftDetails = (await publicClient.readContract({
             address: mintContractAddress,
             abi: mintABI,
             functionName: "nftDetails",
             args: [BigInt(i)],
-          });
+          })) as [number, string, number];
 
           if (nftDetails) {
             const brandName = nftDetails[1];

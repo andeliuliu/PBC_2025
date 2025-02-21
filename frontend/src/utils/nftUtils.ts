@@ -56,12 +56,12 @@ export const getBrandLeaderboard = async (
       try {
         console.log(`[getBrandLeaderboard] Processing NFT #${i}`);
 
-        const nftDetails = await publicClient.readContract({
+        const nftDetails = (await publicClient.readContract({
           address: mintContractAddress,
           abi: mintABI,
           functionName: "nftDetails",
           args: [BigInt(i)],
-        });
+        })) as [number, string, number];
 
         console.log(`[getBrandLeaderboard] NFT #${i} details:`, nftDetails);
 

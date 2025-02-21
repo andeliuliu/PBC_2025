@@ -27,7 +27,7 @@ interface Product {
 }
 
 interface DiscountedProduct extends Product {
-  discountedPrice?: number;
+  discountedPrice: number;
   discountPercent: number;
 }
 
@@ -117,7 +117,9 @@ export default function Home() {
     fetchDiscounts();
   }, [address]);
 
-  const getDiscountedPrice = (product: Product) => {
+  const getDiscountedPrice = (
+    product: Product
+  ): Product | DiscountedProduct => {
     const brandName = product.seller.replace("@", "");
     const discountMultiplier = brandDiscounts.get(brandName) || 0;
     if (discountMultiplier > 0) {
@@ -320,7 +322,7 @@ export default function Home() {
                 const brandName = product.seller.replace("@", "");
                 const nftCount = brandDiscounts.get(brandName) || 0;
 
-                return discounted.discountedPrice ? (
+                return "discountedPrice" in discounted ? (
                   <div>
                     <p className="text-sm line-through text-gray-400">
                       ${product.price}
