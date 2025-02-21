@@ -114,7 +114,7 @@ export default function Home() {
         </Transaction>
 
         <a
-          href={`https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/1`}
+          href={`https://testnets.opensea.io/assets/base_sepolia/${mintContractAddress}/1`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-center text-[#A04545] hover:text-[#8A3A3A] underline"
