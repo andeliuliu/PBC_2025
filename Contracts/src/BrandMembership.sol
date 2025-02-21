@@ -10,7 +10,6 @@ pragma solidity ^0.8.17;
  */
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @notice No "Ownable" inheritance is used here because
@@ -18,12 +17,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  *         not just the contract deployer.
  */
 contract BrandMembership is ERC721URIStorage {
-    using Counters for Counters.Counter;
-
     /**
-     * @dev _tokenIds is a counter for assigning unique token IDs automatically.
+     * @dev Counter for assigning unique token IDs automatically
      */
-    Counters.Counter private _tokenIds;
+    uint256 private _nextTokenId;
 
     /**
      * @dev Data structure to store brand-specific info for each NFT.
@@ -74,9 +71,7 @@ contract BrandMembership is ERC721URIStorage {
         string memory brandName,
         string memory discountCode
     ) public {
-        // Increment the token ID counter to get a new unique ID
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        uint256 newItemId = _nextTokenId++;
 
         // Update topNft with the latest minted NFT ID
         topNft = newItemId;
