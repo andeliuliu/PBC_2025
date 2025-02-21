@@ -44,6 +44,11 @@ contract BrandMembership is ERC721URIStorage {
     mapping(uint256 => NFTData) public nftDetails;
 
     /**
+     * @dev Add the topNft variable
+     */
+    uint256 public topNft;
+
+    /**
      * @notice Contract constructor
      * @dev Sets the name and symbol of the NFT collection.
      */
@@ -72,6 +77,9 @@ contract BrandMembership is ERC721URIStorage {
         // Increment the token ID counter to get a new unique ID
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
+
+        // Update topNft with the latest minted NFT ID
+        topNft = newItemId;
 
         // Store brand-specific data for this NFT
         nftDetails[newItemId] = NFTData({

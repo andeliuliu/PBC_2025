@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import WalletWrapper from "src/components/WalletWrapper";
-import { useAccount } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 import {
   Transaction,
   TransactionButton,
@@ -58,6 +58,12 @@ export default function Home() {
     null
   );
 
+  const { data: topNftId } = useContractRead({
+    address: mintContractAddress,
+    abi: mintABI,
+    functionName: "topNft",
+  });
+
   const getSelectedProducts = () => {
     return products.filter((product) => selectedItems.includes(product.id));
   };
@@ -101,8 +107,9 @@ export default function Home() {
         <Transaction
           contracts={contracts}
           chainId={BASE_SEPOLIA_CHAIN_ID}
-          onSuccess={(response) => {
-            setLastMintedTokenId("1"); // Just set a fixed ID for testing
+          onSuccess={() => {
+            // We'll use the topNftId from the contract read instead
+            setLastMintedTokenId(topNftId?.toString());
           }}
           onError={(error) => {
             console.error("Error minting NFT:", error);
@@ -113,14 +120,16 @@ export default function Home() {
           </TransactionButton>
         </Transaction>
 
-        <a
-          href={`https://testnets.opensea.io/assets/base_sepolia/${mintContractAddress}/1`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-center text-[#A04545] hover:text-[#8A3A3A] underline"
-        >
-          View on OpenSea
-        </a>
+        {lastMintedTokenId && (
+          <a
+            href={`https://testnets.opensea.io/assets/base_sepolia/${mintContractAddress}/${lastMintedTokenId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-center text-[#A04545] hover:text-[#8A3A3A] underline"
+          >
+            View on OpenSea
+          </a>
+        )}
       </div>
     );
   };

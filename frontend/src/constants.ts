@@ -29,4 +29,17 @@ export const mintABI = [
     stateMutability: "public",
     type: "function",
   },
+  {
+    inputs: [],
+    name: "topNft",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
