@@ -42,4 +42,43 @@ export const mintABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "startId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "endId",
+        type: "uint256",
+      },
+    ],
+    name: "getAllNFTDetails",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "creators",
+        type: "address[]",
+      },
+      {
+        internalType: "string[]",
+        name: "brands",
+        type: "string[]",
+      },
+      {
+        internalType: "string[]",
+        name: "discounts",
+        type: "string[]",
+      },
+      {
+        internalType: "address[]",
+        name: "owners",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;

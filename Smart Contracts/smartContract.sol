@@ -116,4 +116,47 @@ contract BrandMembership is ERC721URIStorage {
         NFTData memory data = nftDetails[tokenId];
         return (data.brandCreator, data.brandName, data.discountCode);
     }
+
+    /**
+     * @notice Get all NFT details for a range of NFTs.
+     * @param startId The starting token ID of the range.
+     * @param endId The ending token ID of the range.
+     * @return creators An array of addresses that minted the NFTs.
+     * @return brands An array of brand names for the NFTs.
+     * @return discounts An array of discount codes for the NFTs.
+     * @return owners An array of addresses that own the NFTs.
+     *
+     * @dev This is purely a convenience function for external apps or UIs.
+     */
+    function getAllNFTDetails(uint256 startId, uint256 endId) 
+        external 
+        view 
+        returns (
+            address[] memory creators,
+            string[] memory brands,
+            string[] memory discounts,
+            address[] memory owners
+        ) 
+    {
+        require(endId >= startId, "Invalid range");
+        uint256 size = endId - startId + 1;
+        
+        creators = new address[](size);
+        brands = new string[](size);
+        discounts = new string[](size);
+        owners = new address[](size);
+        
+        for(uint256 i = 0; i < size; i++) {
+            uint256 tokenId = startId + i;
+            if(_exists(tokenId)) {
+                NFTData memory data = nftDetails[tokenId];
+                creators[i] = data.brandCreator;
+                brands[i] = data.brandName;
+                discounts[i] = data.discountCode;
+                owners[i] = ownerOf(tokenId);
+            }
+        }
+        
+        return (creators, brands, discounts, owners);
+    }
 }
