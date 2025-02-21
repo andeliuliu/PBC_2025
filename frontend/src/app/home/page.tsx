@@ -71,7 +71,16 @@ export default function Home() {
   };
 
   const handlePurchase = () => {
-    if (!address) return null;
+    if (!address) {
+      return (
+        <button
+          disabled
+          className="w-full bg-gray-400 text-white py-4 rounded-lg font-medium text-lg mt-2 cursor-not-allowed"
+        >
+          Connect Wallet to Purchase
+        </button>
+      );
+    }
 
     const contracts = [
       {
