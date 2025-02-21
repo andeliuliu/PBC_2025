@@ -1,100 +1,57 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, Crown, ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, Crown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { createPublicClient, http } from "viem";
-import { baseSepolia } from "viem/chains";
-import { mintABI, mintContractAddress } from "src/constants";
+import { getBrandLeaderboard, LeaderboardEntry } from "src/utils/nftUtils";
 
-// Create public client
-const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(),
-});
-
-// Available brands
-const BRANDS = ["Nicole.liu", "Olivia.Rodrigo", "Taylor.Swift", "Madison.Beer"];
-
-interface LeaderboardEntry {
-  address: string;
-  nftCount: number;
-  name: string;
-  image: string;
-}
+const BRANDS = [
+  { name: "Nicole.liu", display: "Nicole Liu" },
+  { name: "Olivia.Rodrigo", display: "Olivia Rodrigo" },
+  { name: "Taylor.Swift", display: "Taylor Swift" },
+  { name: "Madison.Beer", display: "Madison Beer" },
+];
 
 export default function Leaderboard() {
-  const [selectedBrand, setSelectedBrand] = useState(BRANDS[0]);
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
-    []
-  );
+  const [currentBrandIndex, setCurrentBrandIndex] = useState(0);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchLeaderboardData = async () => {
-    try {
-      // Get topNft to know the range
-      const topNftId = await publicClient.readContract({
-        address: mintContractAddress,
-        abi: mintABI,
-        functionName: "topNft",
-      });
+  const currentBrand = BRANDS[currentBrandIndex];
 
-      // Fetch all NFTs
-      const nftData = await publicClient.readContract({
-        address: mintContractAddress,
-        abi: mintABI,
-        functionName: "getAllNFTDetails",
-        args: [1n, topNftId],
-      });
+  const nextBrand = () => {
+    setCurrentBrandIndex((prev) => (prev + 1) % BRANDS.length);
+  };
 
-      // Create ownership tally for selected brand
-      const tally = new Map<string, number>();
-
-      for (let i = 0; i < nftData[0].length; i++) {
-        if (nftData[1][i] === selectedBrand) {
-          const owner = nftData[3][i];
-          tally.set(owner, (tally.get(owner) || 0) + 1);
-        }
-      }
-
-      // Convert to array and sort
-      const sortedLeaderboard = Array.from(tally.entries())
-        .map(([address, count]) => ({
-          address,
-          nftCount: count,
-          name: `${address.slice(0, 6)}...${address.slice(-4)}`,
-          image: "/placeholder.svg",
-        }))
-        .sort((a, b) => b.nftCount - a.nftCount)
-        .slice(0, 10);
-
-      setLeaderboardData(sortedLeaderboard);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching leaderboard data:", error);
-      setLoading(false);
-    }
+  const prevBrand = () => {
+    setCurrentBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
   };
 
   useEffect(() => {
-    fetchLeaderboardData();
-  }, [selectedBrand]);
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      const data = await getBrandLeaderboard(currentBrand.name);
+      setLeaderboard(data);
+      setLoading(false);
+    };
 
-  const switchBrand = (direction: "next" | "prev") => {
-    const currentIndex = BRANDS.indexOf(selectedBrand);
-    if (direction === "next") {
-      setSelectedBrand(BRANDS[(currentIndex + 1) % BRANDS.length]);
-    } else {
-      setSelectedBrand(
-        BRANDS[(currentIndex - 1 + BRANDS.length) % BRANDS.length]
-      );
-    }
-  };
+    fetchLeaderboard();
+  }, [currentBrand.name]);
 
-  if (loading) {
-    return <div className="text-center mt-8">Loading...</div>;
-  }
+  const topUsers = leaderboard.slice(0, 3).map((entry, index) => ({
+    rank: index + 1,
+    name: entry.name,
+    nfts: entry.nftCount,
+    image: entry.image,
+  }));
+
+  const otherUsers = leaderboard.slice(3).map((entry, index) => ({
+    rank: index + 4,
+    name: entry.name,
+    nfts: entry.nftCount,
+    image: entry.image,
+  }));
 
   return (
     <div className="min-h-screen bg-[#F2EDE9] pb-20">
@@ -105,72 +62,112 @@ export default function Leaderboard() {
         <h1 className="text-center text-2xl font-serif">
           Leaderboard
           <div className="flex items-center justify-center gap-4 mt-2">
-            <button onClick={() => switchBrand("prev")}>
-              <ArrowLeft className="h-5 w-5" />
+            <button onClick={prevBrand}>
+              <ChevronLeft className="h-5 w-5" />
             </button>
-            <span className="text-xl">@{selectedBrand}</span>
-            <button onClick={() => switchBrand("next")}>
-              <ArrowRight className="h-5 w-5" />
+            <span className="text-xl">{currentBrand.display}</span>
+            <button onClick={nextBrand}>
+              <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         </h1>
       </div>
 
-      <div className="px-4 mt-8">
-        {/* Top 3 Users */}
-        <div className="flex justify-center items-end gap-4 mb-12">
-          {leaderboardData.slice(0, 3).map((user, index) => (
-            <div
-              key={user.address}
-              className={`flex flex-col items-center ${index === 0 ? "mt-[-20px]" : ""}`}
-            >
-              <div className="relative mt-6">
-                {index === 0 && (
-                  <Crown className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-[#A04545] h-8 w-8" />
-                )}
+      {loading ? (
+        <div className="flex justify-center items-center mt-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#A04545]"></div>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center items-end gap-4 mt-8">
+            {/* Second Place */}
+            {topUsers[1] && (
+              <div className="text-center mb-4">
                 <div className="relative">
                   <Image
-                    src={user.image}
-                    alt={user.name}
-                    width={index === 0 ? 100 : 80}
-                    height={index === 0 ? 100 : 80}
-                    className="rounded-full border-4 border-white shadow-lg"
+                    src={topUsers[1].image}
+                    alt={topUsers[1].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
                   />
-                  <div className="absolute -bottom-3 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#A04545]">
-                    {index + 1}
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    2
                   </div>
                 </div>
-                <div className="mt-4 text-center">
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-sm text-gray-600">{user.nftCount} NFTs</p>
-                </div>
+                <p className="mt-4 font-medium">{topUsers[1].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[1].nfts} NFTs</p>
               </div>
-            </div>
-          ))}
-        </div>
+            )}
 
-        {/* Other Users */}
-        <div className="space-y-2">
-          {leaderboardData.slice(3).map((user, index) => (
-            <div
-              key={user.address}
-              className="flex items-center p-4 rounded-lg bg-[#A04545]"
-            >
-              <span className="w-6 text-white">{index + 4}</span>
-              <div className="relative w-10 h-10 mx-3">
+            {/* First Place */}
+            {topUsers[0] && (
+              <div className="text-center">
+                <Crown className="h-8 w-8 text-[#A04545] mx-auto mb-2" />
+                <div className="relative">
+                  <Image
+                    src={topUsers[0].image}
+                    alt={topUsers[0].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
+                  />
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    1
+                  </div>
+                </div>
+                <p className="mt-4 font-medium">{topUsers[0].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[0].nfts} NFTs</p>
+              </div>
+            )}
+
+            {/* Third Place */}
+            {topUsers[2] && (
+              <div className="text-center mb-8">
+                <div className="relative">
+                  <Image
+                    src={topUsers[2].image}
+                    alt={topUsers[2].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
+                  />
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    3
+                  </div>
+                </div>
+                <p className="mt-4 font-medium">{topUsers[2].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[2].nfts} NFTs</p>
+              </div>
+            )}
+          </div>
+
+          {/* Other Rankings */}
+          <div className="mt-8 px-4">
+            {otherUsers.map((user) => (
+              <div
+                key={user.rank}
+                className="flex items-center gap-4 bg-white rounded-lg p-4 mb-4"
+              >
+                <div className="w-8 text-center font-medium text-gray-600">
+                  {user.rank}
+                </div>
                 <Image
                   src={user.image}
                   alt={user.name}
-                  fill
-                  className="rounded-full object-cover"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
                 />
+                <div className="flex-1">
+                  <p className="font-medium">{user.name}</p>
+                  <p className="text-sm text-gray-600">{user.nfts} NFTs</p>
+                </div>
               </div>
-              <span className="flex-grow text-white">{user.name}</span>
-              <span className="text-white">{user.nftCount} NFTs</span>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
