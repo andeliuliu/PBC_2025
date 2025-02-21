@@ -4,6 +4,16 @@ import Image from "next/image";
 import { useState } from "react";
 import WalletWrapper from "src/components/WalletWrapper";
 import { useAccount } from "wagmi";
+import {
+  Transaction,
+  TransactionButton,
+} from "@coinbase/onchainkit/transaction";
+import {
+  BASE_SEPOLIA_CHAIN_ID,
+  mintABI,
+  mintContractAddress,
+} from "src/constants";
+import type { ContractFunctionParameters } from "viem";
 
 interface Product {
   id: number;
@@ -43,8 +53,10 @@ export default function Home() {
   const { address } = useAccount();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Bags");
-  const [currentPage, setCurrentPage] = useState("home");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [lastMintedTokenId, setLastMintedTokenId] = useState<string | null>(
+    null
+  );
 
   const getSelectedProducts = () => {
     return products.filter((product) => selectedItems.includes(product.id));
@@ -57,10 +69,48 @@ export default function Home() {
         : [...prev, productId]
     );
   };
-  
+
+  const handlePurchase = () => {
+    if (!address) return null;
+
+    const contracts = [
+      {
+        address: mintContractAddress,
+        abi: mintABI,
+        functionName: "mintNFT",
+        args: [
+          address,
+          "ipfs://QmYourIPFSHash", // Replace with your NFT metadata URI
+          "Orchid Marketplace",
+          "20PERCENTOFF",
+        ],
+      },
+    ] as unknown as ContractFunctionParameters[];
+
+    return (
+      <Transaction
+        contracts={contracts}
+        chainId={BASE_SEPOLIA_CHAIN_ID}
+        onSuccess={(response) => {
+          console.log("NFT minted successfully!", response);
+          const txHash = response.transactionHash;
+          const openseaLink = `https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/${txHash}`;
+          console.log("View on OpenSea:", openseaLink);
+          setLastMintedTokenId(txHash);
+        }}
+        onError={(error) => {
+          console.error("Error minting NFT:", error);
+        }}
+      >
+        <TransactionButton className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg mt-2">
+          Purchase ({selectedItems.length} items)
+        </TransactionButton>
+      </Transaction>
+    );
+  };
+
   return (
     <div>
-      {/* Search Bar */}
       <div className="relative">
         <input
           type="text"
@@ -82,7 +132,6 @@ export default function Home() {
         </svg>
       </div>
 
-      {/* Categories */}
       <div className="flex gap-6 mt-4 overflow-x-auto">
         {["Bags", "Shoes", "Tops", "Bottoms", "Jewlery", "Sunglasses"].map(
           (category) => (
@@ -101,7 +150,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Product Grid */}
       <main className="grid grid-cols-2 gap-4 p-4 mb-16">
         {products.map((product) => (
           <div
@@ -144,7 +192,6 @@ export default function Home() {
         ))}
       </main>
 
-      {/* Cart Popup - now relative to container */}
       {selectedItems.length > 0 && (
         <div className="absolute bottom-20 left-0 right-0 px-4 mb-2">
           <div className="bg-[#F2EDE9]/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
@@ -184,12 +231,19 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <button
-              className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg mt-2"
-              onClick={() => console.log("Purchase clicked")}
-            >
-              Purchase ({selectedItems.length} items)
-            </button>
+            {handlePurchase()}
+            {lastMintedTokenId && (
+              <div className="mt-2 text-sm text-center">
+                <a
+                  href={`https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/${lastMintedTokenId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#A04545] underline"
+                >
+                  View your NFT on OpenSea
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
