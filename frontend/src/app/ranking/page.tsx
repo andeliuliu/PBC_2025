@@ -81,6 +81,27 @@ export default function Leaderboard() {
         </div>
       ) : (
         <>
+          {/* Add Rewards Section */}
+          <div className="mt-6 px-4">
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <h2 className="text-lg font-serif text-center mb-3">Top Prizes</h2>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2 justify-center">
+                  <Crown className="h-4 w-4 text-[#A04545]" />
+                  <p><span className="font-medium">1st Place:</span> Coffee Date with {currentBrand.display}</p>
+                </div>
+                <div className="flex items-center gap-2 justify-center">
+                  <div className="w-4 h-4 flex items-center justify-center font-medium text-[#A04545]">2</div>
+                  <p><span className="font-medium">2nd Place:</span> Limited Edition Item</p>
+                </div>
+                <div className="flex items-center gap-2 justify-center">
+                  <div className="w-4 h-4 flex items-center justify-center font-medium text-[#A04545]">3</div>
+                  <p><span className="font-medium">3rd Place:</span> Instagram Follow Back</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-center items-end gap-4 mt-8">
             {/* Second Place */}
             {topUsers[1] && (

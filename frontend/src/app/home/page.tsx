@@ -18,6 +18,7 @@ import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { getBrandDiscounts } from "src/utils/discountUtils";
 import { uploadMetadata } from "src/utils/ipfsService";
+
 interface Product {
   id: number;
   image: string;
