@@ -36,6 +36,9 @@ With **Base, OnchainKit, and Smart Wallets**, Orchid ensures a **frictionless** 
 
 ## 📦 Setup & Installation  
 
+# Go into the proper Directory 
+cd frontend
+
 # Install Bun (if not installed)
 curl -fsSL https://bun.sh/install | bash
 
