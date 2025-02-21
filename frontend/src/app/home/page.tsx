@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WalletWrapper from "src/components/WalletWrapper";
 import { useAccount } from "wagmi";
 import {
@@ -16,12 +16,17 @@ import {
 import type { ContractFunctionParameters } from "viem";
 import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
+import { getBrandDiscounts } from "src/utils/discountUtils";
 
 interface Product {
   id: number;
   image: string;
   seller: string;
   price: number;
+}
+
+interface DiscountedProduct extends Product {
+  discountedPrice?: number;
 }
 
 const products: Product[] = [
@@ -96,9 +101,39 @@ export default function Home() {
   const [lastMintedTokenId, setLastMintedTokenId] = useState<string | null>(
     null
   );
+  const [brandDiscounts, setBrandDiscounts] = useState<Map<string, number>>(
+    new Map()
+  );
+
+  useEffect(() => {
+    async function fetchDiscounts() {
+      if (address) {
+        const discounts = await getBrandDiscounts(address);
+        setBrandDiscounts(discounts);
+      }
+    }
+    fetchDiscounts();
+  }, [address]);
+
+  const getDiscountedPrice = (product: Product) => {
+    const brandName = product.seller.replace("@", "");
+    const discountMultiplier = brandDiscounts.get(brandName) || 0;
+    if (discountMultiplier > 0) {
+      // 20% off for each NFT owned, up to 60% max
+      const discountPercent = Math.min(discountMultiplier * 20, 60);
+      const discountedPrice = product.price * (1 - discountPercent / 100);
+      return {
+        ...product,
+        discountedPrice: Number(discountedPrice.toFixed(2)),
+      };
+    }
+    return product;
+  };
 
   const getSelectedProducts = () => {
-    return products.filter((product) => selectedItems.includes(product.id));
+    return products
+      .filter((product) => selectedItems.includes(product.id))
+      .map(getDiscountedPrice);
   };
 
   const toggleItemSelection = (productId: number) => {
@@ -250,7 +285,21 @@ export default function Home() {
               <p className="text-sm text-gray-600 font-serif">
                 {product.seller}
               </p>
-              <p className="font-semibold">${product.price}</p>
+              {(() => {
+                const discounted = getDiscountedPrice(product);
+                return discounted.discountedPrice ? (
+                  <div>
+                    <p className="text-sm line-through text-gray-400">
+                      ${product.price}
+                    </p>
+                    <p className="font-semibold text-[#A04545]">
+                      ${discounted.discountedPrice}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="font-semibold">${product.price}</p>
+                );
+              })()}
             </div>
           </div>
         ))}
