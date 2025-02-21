@@ -88,6 +88,12 @@ export default function Home() {
       );
     }
 
+    // Get the first selected product's seller name
+    const selectedProduct = getSelectedProducts()[0];
+    const brandName = selectedProduct
+      ? selectedProduct.seller.replace("@", "")
+      : "Unknown Seller";
+
     const contracts = [
       {
         address: mintContractAddress,
@@ -96,7 +102,7 @@ export default function Home() {
         args: [
           address,
           "ipfs://QmYourIPFSHash",
-          "Orchid Marketplace",
+          brandName, // Use the seller's name as the brand name
           "20PERCENTOFF",
         ],
       },
@@ -108,7 +114,6 @@ export default function Home() {
           contracts={contracts}
           chainId={BASE_SEPOLIA_CHAIN_ID}
           onSuccess={() => {
-            // We'll use the topNftId from the contract read instead
             setLastMintedTokenId(topNftId?.toString());
           }}
           onError={(error) => {
