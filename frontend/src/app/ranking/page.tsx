@@ -44,6 +44,7 @@ export default function Leaderboard() {
     name: entry.name,
     nfts: entry.nftCount,
     image: entry.image,
+    walletAddress: entry.walletAddress,
   }));
 
   const otherUsers = leaderboard.slice(3).map((entry, index) => ({
@@ -51,6 +52,7 @@ export default function Leaderboard() {
     name: entry.name,
     nfts: entry.nftCount,
     image: entry.image,
+    walletAddress: entry.walletAddress,
   }));
 
   return (
@@ -159,7 +161,14 @@ export default function Leaderboard() {
                   height={40}
                   className="rounded-full"
                 />
-                <div className="flex-1">
+                <div 
+                  className="flex-1 cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    // OpenSea profile URL for Base mainnet
+                    const openSeaUrl = `https://opensea.io/${user.walletAddress}`;
+                    window.open(openSeaUrl, '_blank');
+                  }}
+                >
                   <p className="font-medium">{user.name}</p>
                   <p className="text-sm text-gray-600">{user.nfts} NFTs</p>
                 </div>

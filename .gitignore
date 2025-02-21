@@ -1,0 +1,9 @@
+# Ignore celebrity photos
+
+# Next.js build output
+.next/
+
+# Other common ignores
+node_modules/
+.env
+.env.local

@@ -7,11 +7,20 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
+const PROFILE_IMAGES = [
+  '/annHathaway.png',
+  '/chrisrock.png',
+  '/kendalljenner.png',
+  '/leonardodecaporio.png',
+  '/nataliePortman.png',
+];
+
 export interface LeaderboardEntry {
   address: string;
   name: string;
   nftCount: number;
   image: string;
+  walletAddress: string;
 }
 
 export const getBrandLeaderboard = async (
@@ -105,11 +114,12 @@ export const getBrandLeaderboard = async (
 
     // Convert to array and sort
     const leaderboard: LeaderboardEntry[] = Array.from(addressCounts.entries())
-      .map(([address, count]) => ({
+      .map(([address, count], index) => ({  // Added index parameter here
         address,
         name: `${address.slice(0, 6)}...${address.slice(-4)}`,
         nftCount: count,
-        image: "/placeholder.svg",
+        image: PROFILE_IMAGES[index % PROFILE_IMAGES.length], // Use index instead of count
+        walletAddress: address,
       }))
       .sort((a, b) => b.nftCount - a.nftCount);
 
