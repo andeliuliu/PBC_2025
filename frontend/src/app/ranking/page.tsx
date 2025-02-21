@@ -1,76 +1,58 @@
+"use client";
+
 import Image from "next/image";
-import { ChevronLeft, Crown } from "lucide-react";
+import { ChevronLeft, Crown, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getBrandLeaderboard, LeaderboardEntry } from "src/utils/nftUtils";
 
-const topUsers = [
-  {
-    rank: 2,
-    name: "Nicole Liu",
-    nfts: 40,
-    image: "/placeholder.svg?height=120&width=120",
-  },
-  {
-    rank: 1,
-    name: "Bryan Wolf",
-    nfts: 43,
-    image: "/placeholder.svg?height=120&width=120",
-  },
-  {
-    rank: 3,
-    name: "Alex Turner",
-    nfts: 38,
-    image: "/placeholder.svg?height=120&width=120",
-  },
-];
-
-const otherUsers = [
-  {
-    rank: 4,
-    name: "Marsha Fisher",
-    nfts: 36,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    rank: 5,
-    name: "Juanita Cormier",
-    nfts: 35,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    rank: 6,
-    name: "You",
-    nfts: 34,
-    image: "/placeholder.svg?height=40&width=40",
-    isYou: true,
-  },
-  {
-    rank: 7,
-    name: "Tamara Schmidt",
-    nfts: 33,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    rank: 8,
-    name: "Ricardo Veum",
-    nfts: 32,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    rank: 9,
-    name: "Gary Sanford",
-    nfts: 31,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    rank: 10,
-    name: "Becky Bartell",
-    nfts: 30,
-    image: "/placeholder.svg?height=40&width=40",
-  },
+const BRANDS = [
+  { name: "Nicole.liu", display: "Nicole Liu" },
+  { name: "Olivia.Rodrigo", display: "Olivia Rodrigo" },
+  { name: "Taylor.Swift", display: "Taylor Swift" },
+  { name: "Madison.Beer", display: "Madison Beer" },
 ];
 
 export default function Leaderboard() {
-  console.log("Leaderboard component is rendering");
+  const [currentBrandIndex, setCurrentBrandIndex] = useState(0);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentBrand = BRANDS[currentBrandIndex];
+
+  const nextBrand = () => {
+    setCurrentBrandIndex((prev) => (prev + 1) % BRANDS.length);
+  };
+
+  const prevBrand = () => {
+    setCurrentBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
+  };
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      const data = await getBrandLeaderboard(currentBrand.name);
+      setLeaderboard(data);
+      setLoading(false);
+    };
+
+    fetchLeaderboard();
+  }, [currentBrand.name]);
+
+  const topUsers = leaderboard.slice(0, 3).map((entry, index) => ({
+    rank: index + 1,
+    name: entry.name,
+    nfts: entry.nftCount,
+    image: entry.image,
+  }));
+
+  const otherUsers = leaderboard.slice(3).map((entry, index) => ({
+    rank: index + 4,
+    name: entry.name,
+    nfts: entry.nftCount,
+    image: entry.image,
+  }));
+
   return (
     <div className="min-h-screen bg-[#F2EDE9] pb-20">
       <div className="relative pt-6 px-4">
@@ -79,67 +61,113 @@ export default function Leaderboard() {
         </Link>
         <h1 className="text-center text-2xl font-serif">
           Leaderboard
-          <span className="block text-xl mb-8">Aritzia</span>
+          <div className="flex items-center justify-center gap-4 mt-2">
+            <button onClick={prevBrand}>
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <span className="text-xl">{currentBrand.display}</span>
+            <button onClick={nextBrand}>
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
         </h1>
       </div>
 
-      <div className="px-4 mt-8">
-        {/* Top 3 Users */}
-        <div className="flex justify-center items-end gap-4 mb-12">
-          {topUsers.map((user) => (
-            <div
-              key={user.rank}
-              className={`flex flex-col items-center ${user.rank === 1 ? "mt-[-20px]" : ""}`}
-            >
-              <div className="relative mt-6">
-                {user.rank === 1 && (
-                  <Crown className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-[#A04545] h-8 w-8" />
-                )}
+      {loading ? (
+        <div className="flex justify-center items-center mt-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#A04545]"></div>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center items-end gap-4 mt-8">
+            {/* Second Place */}
+            {topUsers[1] && (
+              <div className="text-center mb-4">
                 <div className="relative">
                   <Image
-                    src={user.image || "/placeholder.svg"}
-                    alt={user.name}
-                    width={user.rank === 1 ? 100 : 80}
-                    height={user.rank === 1 ? 100 : 80}
-                    className="rounded-full border-4 border-white shadow-lg"
+                    src={topUsers[1].image}
+                    alt={topUsers[1].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
                   />
-                  <div
-                    className={`absolute -bottom-3 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#A04545]`}
-                  >
-                    {user.rank}
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    2
                   </div>
                 </div>
-                <div className="mt-4 text-center">
-                  <p className="font-medium text-sm">{user.name}</p>
+                <p className="mt-4 font-medium">{topUsers[1].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[1].nfts} NFTs</p>
+              </div>
+            )}
+
+            {/* First Place */}
+            {topUsers[0] && (
+              <div className="text-center">
+                <Crown className="h-8 w-8 text-[#A04545] mx-auto mb-2" />
+                <div className="relative">
+                  <Image
+                    src={topUsers[0].image}
+                    alt={topUsers[0].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
+                  />
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    1
+                  </div>
+                </div>
+                <p className="mt-4 font-medium">{topUsers[0].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[0].nfts} NFTs</p>
+              </div>
+            )}
+
+            {/* Third Place */}
+            {topUsers[2] && (
+              <div className="text-center mb-8">
+                <div className="relative">
+                  <Image
+                    src={topUsers[2].image}
+                    alt={topUsers[2].name}
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-[#A04545]"
+                  />
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    3
+                  </div>
+                </div>
+                <p className="mt-4 font-medium">{topUsers[2].name}</p>
+                <p className="text-sm text-gray-600">{topUsers[2].nfts} NFTs</p>
+              </div>
+            )}
+          </div>
+
+          {/* Other Rankings */}
+          <div className="mt-8 px-4">
+            {otherUsers.map((user) => (
+              <div
+                key={user.rank}
+                className="flex items-center gap-4 bg-white rounded-lg p-4 mb-4"
+              >
+                <div className="w-8 text-center font-medium text-gray-600">
+                  {user.rank}
+                </div>
+                <Image
+                  src={user.image}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div className="flex-1">
+                  <p className="font-medium">{user.name}</p>
                   <p className="text-sm text-gray-600">{user.nfts} NFTs</p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Other Users */}
-        <div className="space-y-2">
-          {otherUsers.map((user) => (
-            <div
-              key={user.rank}
-              className={`flex items-center p-4 rounded-lg ${user.isYou ? "bg-[#606C38]" : "bg-[#A04545]"}`}
-            >
-              <span className="w-6 text-white">{user.rank}</span>
-              <div className="relative w-10 h-10 mx-3">
-                <Image
-                  src={user.image || "/placeholder.svg"}
-                  alt={user.name}
-                  fill
-                  className="rounded-full object-cover"
-                />
-              </div>
-              <span className="flex-grow text-white">{user.name}</span>
-              <span className="text-white">{user.nfts} NFTs</span>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

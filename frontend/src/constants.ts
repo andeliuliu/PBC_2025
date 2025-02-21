@@ -42,4 +42,22 @@ export const mintABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
+    name: "ownerOf",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
+    name: "nftDetails",
+    outputs: [
+      { internalType: "address", name: "brandCreator", type: "address" },
+      { internalType: "string", name: "brandName", type: "string" },
+      { internalType: "string", name: "discountCode", type: "string" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
