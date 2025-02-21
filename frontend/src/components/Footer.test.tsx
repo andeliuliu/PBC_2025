@@ -15,7 +15,7 @@ describe('Footer', () => {
 
     expect(screen.getByText(/Built with love by/i)).toBeInTheDocument();
 
-    const onchainKitLink = screen.getByTitle('OnchainKit');
+    const onchainKitLink = screen.getByTitle('d');
     expect(onchainKitLink).toBeInTheDocument();
     expect(onchainKitLink).toHaveAttribute('href', ONCHAINKIT_LINK);
   });
