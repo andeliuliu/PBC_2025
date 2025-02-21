@@ -210,15 +210,18 @@ export default function Home() {
           chainId={BASE_SEPOLIA_CHAIN_ID}
           onSuccess={async () => {
             const topNftId = await getTopNftId();
-            setLastMintedTokenId(topNftId?.toString());
+            if (topNftId) {
+              setLastMintedTokenId(topNftId.toString());
+            }
           }}
           onError={(error) => {
             console.error("Error minting NFT:", error);
           }}
         >
-          <TransactionButton className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg">
-            Purchase ({selectedItems.length} items)
-          </TransactionButton>
+          <TransactionButton
+            className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg"
+            text={`Purchase (${selectedItems.length} items)`}
+          />
         </Transaction>
 
         {lastMintedTokenId && (
