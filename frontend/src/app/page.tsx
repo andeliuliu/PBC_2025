@@ -47,15 +47,18 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState("Bags");
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#F2EDE9]">
       {/* Header */}
-      <header className="p-4 border-b">
+      <header className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col items-center">
             <Image src="/logo.png" alt="Orchid" width={40} height={40} />
             <h1 className="mt-2 text-xl font-serif">Orchid</h1>
           </div>
-          <WalletWrapper className="min-w-[120px]" text="Connect" />
+          <WalletWrapper
+            className="min-w-[120px] bg-[#A04545] text-white rounded-lg"
+            text="Connect"
+          />
         </div>
 
         {/* Search Bar */}
@@ -63,7 +66,7 @@ export default function Page() {
           <input
             type="text"
             placeholder="Search for designer, item, color, etc."
-            className="w-full p-2 pl-10 border rounded-lg"
+            className="w-full p-2 pl-10 rounded-lg bg-white border-none"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -86,8 +89,10 @@ export default function Page() {
             (category) => (
               <button
                 key={category}
-                className={`whitespace-nowrap ${
-                  selectedCategory === category ? "border-b-2 border-black" : ""
+                className={`whitespace-nowrap pb-2 ${
+                  selectedCategory === category
+                    ? "border-b-2 border-[#A04545] text-[#A04545]"
+                    : "text-gray-600"
                 }`}
                 onClick={() => setSelectedCategory(category)}
               >
@@ -101,7 +106,10 @@ export default function Page() {
       {/* Product Grid */}
       <main className="grid grid-cols-2 gap-4 p-4">
         {products.map((product) => (
-          <div key={product.id} className="rounded-lg overflow-hidden">
+          <div
+            key={product.id}
+            className="bg-white rounded-lg overflow-hidden shadow-sm"
+          >
             <div className="relative aspect-square">
               <Image
                 src={product.image}
@@ -112,7 +120,7 @@ export default function Page() {
               {product.verified && (
                 <div className="absolute top-2 right-2 bg-white rounded-full p-1">
                   <svg
-                    className="w-4 h-4 text-blue-500"
+                    className="w-4 h-4 text-[#A04545]"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -136,7 +144,7 @@ export default function Page() {
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 w-full border-t bg-white">
         <div className="flex justify-around p-4">
-          <button>
+          <button className="text-[#A04545]">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -151,36 +159,7 @@ export default function Page() {
               />
             </svg>
           </button>
-          <button>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-          </button>
-          <button>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </button>
+          {/* Other navigation buttons */}
         </div>
       </nav>
     </div>
