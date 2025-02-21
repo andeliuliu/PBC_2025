@@ -35,7 +35,7 @@ const products: Product[] = [
   },
   {
     id: 4,
-    image: "/@4.png",
+    image: "/4.png",
     seller: "@Madison.Beer",
     price: 200,
   },
