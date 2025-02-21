@@ -16,29 +16,29 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    image: "/1.png",
+    image: "/bags/bag1.jpg",
     seller: "@Nicole.liu",
     price: 80,
-    verified: true,
+    verified: true
   },
   {
     id: 2,
-    image: "/2.png",
+    image: "/bags/bag2.jpg",
     seller: "@Olivia.Rodrigo",
-    price: 230,
+    price: 230
   },
   {
     id: 3,
-    image: "/3.png",
+    image: "/bags/bag3.jpg",
     seller: "@Taylor.Swift",
-    price: 3400,
+    price: 3400
   },
   {
     id: 4,
-    image: "/4.png",
+    image: "/bags/bag4.jpg",
     seller: "@Madison.Beer",
-    price: 200,
-  },
+    price: 200
+  }
 ];
 
 export default function Page() {
@@ -54,7 +54,7 @@ export default function Page() {
           <Image src="/logo.png" alt="Orchid" width={100} height={40} />
           <WalletWrapper className="min-w-[120px]" text="Connect" />
         </div>
-
+        
         {/* Search Bar */}
         <div className="relative">
           <input
@@ -79,19 +79,17 @@ export default function Page() {
 
         {/* Categories */}
         <div className="flex gap-6 mt-4 overflow-x-auto">
-          {["Bags", "Shoes", "Tops", "Bottoms", "Jewlery", "Sunglasses"].map(
-            (category) => (
-              <button
-                key={category}
-                className={`whitespace-nowrap ${
-                  selectedCategory === category ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            )
-          )}
+          {["Bags", "Shoes", "Tops", "Bottoms", "Jewlery", "Sunglasses"].map((category) => (
+            <button
+              key={category}
+              className={`whitespace-nowrap ${
+                selectedCategory === category ? "border-b-2 border-black" : ""
+              }`}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
       </header>
 
@@ -134,48 +132,18 @@ export default function Page() {
       <nav className="fixed bottom-0 w-full border-t bg-white">
         <div className="flex justify-around p-4">
           <button>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </button>
           <button>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           </button>
           <button>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </button>
         </div>
