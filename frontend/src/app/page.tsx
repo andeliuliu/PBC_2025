@@ -51,7 +51,10 @@ export default function Page() {
       {/* Header */}
       <header className="p-4 border-b">
         <div className="flex items-center justify-between mb-4">
-          <Image src="/logo.png" alt="Orchid" width={100} height={40} />
+          <div className="flex flex-col items-center">
+            <Image src="/logo.png" alt="Orchid" width={40} height={40} />
+            <h1 className="mt-2 text-xl font-serif">Orchid</h1>
+          </div>
           <WalletWrapper className="min-w-[120px]" text="Connect" />
         </div>
 
