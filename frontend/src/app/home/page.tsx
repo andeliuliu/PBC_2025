@@ -28,6 +28,7 @@ interface Product {
 
 interface DiscountedProduct extends Product {
   discountedPrice?: number;
+  discountPercent: number;
 }
 
 const products: Product[] = [
@@ -120,12 +121,13 @@ export default function Home() {
     const brandName = product.seller.replace("@", "");
     const discountMultiplier = brandDiscounts.get(brandName) || 0;
     if (discountMultiplier > 0) {
-      // 20% off for each NFT owned, up to 60% max
-      const discountPercent = Math.min(discountMultiplier * 20, 60);
+      // 10% off for each NFT owned (no cap)
+      const discountPercent = discountMultiplier * 10;
       const discountedPrice = product.price * (1 - discountPercent / 100);
       return {
         ...product,
         discountedPrice: Number(discountedPrice.toFixed(2)),
+        discountPercent: discountPercent,
       };
     }
     return product;
@@ -173,33 +175,30 @@ export default function Home() {
           attributes: [
             {
               trait_type: "Brand",
-              value: brandName
+              value: brandName,
             },
             {
               trait_type: "Discount",
-              value: "20PERCENTOFF"
-            }
-          ]
+              value: "20PERCENTOFF",
+            },
+          ],
         };
 
         // Upload metadata and get tokenURI
-        console.log('Uploading to IPFS...');
+        console.log("Uploading to IPFS...");
         const tokenUri = await uploadMetadata(metadata);
-        console.log('Metadata uploaded to IPFS:', tokenUri);
+        console.log("Metadata uploaded to IPFS:", tokenUri);
 
-        return [{
-          address: mintContractAddress,
-          abi: mintABI,
-          functionName: "mintNFT",
-          args: [
-            address,
-            tokenUri,
-            brandName,
-            "20PERCENTOFF",
-          ],
-        }] as unknown as ContractFunctionParameters[];
+        return [
+          {
+            address: mintContractAddress,
+            abi: mintABI,
+            functionName: "mintNFT",
+            args: [address, tokenUri, brandName, "20PERCENTOFF"],
+          },
+        ] as unknown as ContractFunctionParameters[];
       } catch (error) {
-        console.error('Error preparing transaction:', error);
+        console.error("Error preparing transaction:", error);
         throw error;
       }
     };
@@ -315,13 +314,20 @@ export default function Home() {
               </p>
               {(() => {
                 const discounted = getDiscountedPrice(product);
+                const brandName = product.seller.replace("@", "");
+                const nftCount = brandDiscounts.get(brandName) || 0;
+
                 return discounted.discountedPrice ? (
                   <div>
                     <p className="text-sm line-through text-gray-400">
                       ${product.price}
                     </p>
                     <p className="font-semibold text-[#A04545]">
-                      ${discounted.discountedPrice}
+                      ${discounted.discountedPrice} (
+                      {discounted.discountPercent}% off)
+                    </p>
+                    <p className="text-xs text-[#A04545] mt-1">
+                      {nftCount} Loyalty NFT{nftCount !== 1 ? "s" : ""}
                     </p>
                   </div>
                 ) : (
