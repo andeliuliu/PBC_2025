@@ -17,7 +17,7 @@ import type { ContractFunctionParameters } from "viem";
 import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { getBrandDiscounts } from "src/utils/discountUtils";
-
+import { uploadMetadata } from "src/utils/ipfsService";
 interface Product {
   id: number;
   image: string;
@@ -162,19 +162,46 @@ export default function Home() {
       ? selectedProduct.seller.replace("@", "")
       : "Unknown Seller";
 
-    const contracts = [
-      {
-        address: mintContractAddress,
-        abi: mintABI,
-        functionName: "mintNFT",
-        args: [
-          address,
-          "ipfs://QmYourIPFSHash",
-          brandName, // Use the seller's name as the brand name
-          "20PERCENTOFF",
-        ],
-      },
-    ] as unknown as ContractFunctionParameters[];
+    const contracts = async () => {
+      try {
+        // Prepare metadata
+        const metadata = {
+          name: `${brandName} Membership NFT`,
+          description: "Exclusive membership NFT with shopping benefits",
+          image: selectedProduct.image,
+          attributes: [
+            {
+              trait_type: "Brand",
+              value: brandName
+            },
+            {
+              trait_type: "Discount",
+              value: "20PERCENTOFF"
+            }
+          ]
+        };
+
+        // Upload metadata and get tokenURI
+        console.log('Uploading to IPFS...');
+        const tokenUri = await uploadMetadata(metadata);
+        console.log('Metadata uploaded to IPFS:', tokenUri);
+
+        return [{
+          address: mintContractAddress,
+          abi: mintABI,
+          functionName: "mintNFT",
+          args: [
+            address,
+            tokenUri,
+            brandName,
+            "20PERCENTOFF",
+          ],
+        }] as unknown as ContractFunctionParameters[];
+      } catch (error) {
+        console.error('Error preparing transaction:', error);
+        throw error;
+      }
+    };
 
     return (
       <div className="flex flex-col gap-2">

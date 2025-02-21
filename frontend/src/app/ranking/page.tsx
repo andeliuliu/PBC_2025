@@ -86,13 +86,20 @@ export default function Leaderboard() {
             {topUsers[1] && (
               <div className="text-center mb-4">
                 <div className="relative">
-                  <Image
-                    src={topUsers[1].image}
-                    alt={topUsers[1].name}
-                    width={120}
-                    height={120}
-                    className="rounded-full border-4 border-[#A04545]"
-                  />
+                  <a 
+                    href={`https://testnets.opensea.io/${topUsers[1].walletAddress}?chain=base_sepolia`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-pointer"
+                  >
+                    <Image
+                      src={topUsers[1].image}
+                      alt={topUsers[1].name}
+                      width={120}
+                      height={120}
+                      className="rounded-full border-4 border-[#A04545] hover:opacity-80 transition-opacity"
+                    />
+                  </a>
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
                     2
                   </div>
@@ -107,13 +114,20 @@ export default function Leaderboard() {
               <div className="text-center">
                 <Crown className="h-8 w-8 text-[#A04545] mx-auto mb-2" />
                 <div className="relative">
-                  <Image
-                    src={topUsers[0].image}
-                    alt={topUsers[0].name}
-                    width={120}
-                    height={120}
-                    className="rounded-full border-4 border-[#A04545]"
-                  />
+                  <a 
+                    href={`https://testnets.opensea.io/${topUsers[0].walletAddress}?chain=base_sepolia`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-pointer"
+                  >
+                    <Image
+                      src={topUsers[0].image}
+                      alt={topUsers[0].name}
+                      width={120}
+                      height={120}
+                      className="rounded-full border-4 border-[#A04545] hover:opacity-80 transition-opacity"
+                    />
+                  </a>
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
                     1
                   </div>
@@ -127,13 +141,20 @@ export default function Leaderboard() {
             {topUsers[2] && (
               <div className="text-center mb-8">
                 <div className="relative">
-                  <Image
-                    src={topUsers[2].image}
-                    alt={topUsers[2].name}
-                    width={120}
-                    height={120}
-                    className="rounded-full border-4 border-[#A04545]"
-                  />
+                  <a 
+                    href={`https://testnets.opensea.io/${topUsers[2].walletAddress}?chain=base_sepolia`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-pointer"
+                  >
+                    <Image
+                      src={topUsers[2].image}
+                      alt={topUsers[2].name}
+                      width={120}
+                      height={120}
+                      className="rounded-full border-4 border-[#A04545] hover:opacity-80 transition-opacity"
+                    />
+                  </a>
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#A04545] text-white rounded-full w-8 h-8 flex items-center justify-center">
                     3
                   </div>
@@ -154,21 +175,21 @@ export default function Leaderboard() {
                 <div className="w-8 text-center font-medium text-gray-600">
                   {user.rank}
                 </div>
-                <Image
-                  src={user.image}
-                  alt={user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <div 
-                  className="flex-1 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => {
-                    // OpenSea profile URL for Base mainnet
-                    const openSeaUrl = `https://opensea.io/${user.walletAddress}`;
-                    window.open(openSeaUrl, '_blank');
-                  }}
+                <a 
+                  href={`https://testnets.opensea.io/${user.walletAddress}?chain=base_sepolia`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer"
                 >
+                  <Image
+                    src={user.image}
+                    alt={user.name}
+                    width={40}
+                    height={40}
+                    className="rounded-full hover:opacity-80 transition-opacity"
+                  />
+                </a>
+                <div className="flex-1">
                   <p className="font-medium">{user.name}</p>
                   <p className="text-sm text-gray-600">{user.nfts} NFTs</p>
                 </div>
