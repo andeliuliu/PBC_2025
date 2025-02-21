@@ -89,7 +89,7 @@ export default function Home() {
         functionName: "mintNFT",
         args: [
           address,
-          "ipfs://QmYourIPFSHash", // Replace with your NFT metadata URI
+          "ipfs://QmYourIPFSHash",
           "Orchid Marketplace",
           "20PERCENTOFF",
         ],
@@ -97,24 +97,31 @@ export default function Home() {
     ] as unknown as ContractFunctionParameters[];
 
     return (
-      <Transaction
-        contracts={contracts}
-        chainId={BASE_SEPOLIA_CHAIN_ID}
-        onSuccess={(response) => {
-          console.log("NFT minted successfully!", response);
-          const txHash = response.transactionHash;
-          const openseaLink = `https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/${txHash}`;
-          console.log("View on OpenSea:", openseaLink);
-          setLastMintedTokenId(txHash);
-        }}
-        onError={(error) => {
-          console.error("Error minting NFT:", error);
-        }}
-      >
-        <TransactionButton className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg mt-2">
-          Purchase ({selectedItems.length} items)
-        </TransactionButton>
-      </Transaction>
+      <div className="flex flex-col gap-2">
+        <Transaction
+          contracts={contracts}
+          chainId={BASE_SEPOLIA_CHAIN_ID}
+          onSuccess={(response) => {
+            setLastMintedTokenId("1"); // Just set a fixed ID for testing
+          }}
+          onError={(error) => {
+            console.error("Error minting NFT:", error);
+          }}
+        >
+          <TransactionButton className="w-full bg-[#A04545] text-white py-4 rounded-lg font-medium text-lg">
+            Purchase ({selectedItems.length} items)
+          </TransactionButton>
+        </Transaction>
+
+        <a
+          href={`https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/1`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-center text-[#A04545] hover:text-[#8A3A3A] underline"
+        >
+          View on OpenSea
+        </a>
+      </div>
     );
   };
 
@@ -241,18 +248,6 @@ export default function Home() {
               ))}
             </div>
             {handlePurchase()}
-            {lastMintedTokenId && (
-              <div className="mt-2 text-sm text-center">
-                <a
-                  href={`https://testnets.opensea.io/assets/base-sepolia/${mintContractAddress}/${lastMintedTokenId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#A04545] underline"
-                >
-                  View your NFT on OpenSea
-                </a>
-              </div>
-            )}
           </div>
         </div>
       )}
