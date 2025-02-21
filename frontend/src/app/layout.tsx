@@ -46,12 +46,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inriaSerif.className} ${inter.className}`}>
-      <body className="flex items-center justify-center">
+      <body className="flex items-center justify-center text-[#030712]">
         <OnchainProviders>
-          <div className="min-h-screen p-4 bg-[#F2EDE9]">
+          <div className="min-h-screen w-full p-4 bg-[#F2EDE9]">
             <div className="mx-auto w-[480px] h-[calc(100vh-32px)] relative bg-[#F2EDE9] shadow-xl rounded-3xl px-4 overflow-hidden">
               <Header />
-              {children}
+              <div className="bg-[#F2EDE9]">{children}</div>
               <Footer />
             </div>
           </div>
