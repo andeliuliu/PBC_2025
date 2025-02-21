@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Counter} from "../src/Counter.sol";
+import {BrandMembership} from "../src/BrandMembership.sol";
 
-contract CounterScript is Script {
-    Counter public counter;
+contract BrandMembershipScript is Script {
+    BrandMembership public brandMembership;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        counter = new Counter();
+        brandMembership = new BrandMembership();
 
         vm.stopBroadcast();
     }
