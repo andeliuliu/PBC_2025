@@ -10,3 +10,6 @@
 [submodule "pbc/lib/openzeppelin-contracts"]
 	path = pbc/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Contracts/lib/openzeppelin-contracts"]
+	path = Contracts/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
