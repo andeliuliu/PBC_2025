@@ -46,6 +46,15 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Bags");
   const [currentPage, setCurrentPage] = useState("home");
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const toggleItemSelection = (productId: number) => {
+    setSelectedItems(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F2EDE9]">
@@ -109,7 +118,10 @@ export default function Page() {
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white rounded-lg overflow-hidden shadow-sm"
+            className={`bg-white rounded-lg overflow-hidden shadow-sm relative ${
+              selectedItems.includes(product.id) ? 'ring-2 ring-[#A04545]' : ''
+            }`}
+            onClick={() => toggleItemSelection(product.id)}
           >
             <div className="relative aspect-square">
               <Image
@@ -128,6 +140,21 @@ export default function Page() {
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+              {selectedItems.includes(product.id) && (
+                <div className="absolute top-2 left-2 z-10 bg-[#A04545] rounded-full p-1">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                       clipRule="evenodd"
                     />
                   </svg>
